@@ -1,0 +1,47 @@
+import boto3
+import json
+import datetime
+
+today = datetime.date.today()
+
+ec2 = boto3.resource('ec2', region_name='us-east-1')
+
+def get_tag(tags, key='Name'):
+    if not tags: return ''
+    for tag in tags:
+        if tag['Key'] == key:
+            return tag['Value']
+    return ''
+
+conn = boto3.resource('ec2')
+instances = conn.instances.filter(
+    Filters=[
+                {
+                    'Name': 'tag:Backup',
+                    'Values': [
+                        'Yes'
+                    ],
+                },
+            ],
+    )
+for instance in instances:
+    instance_name = get_tag(instance.tags)
+    id=instance.id
+    print("AMI gerada para a instancia de ID: "+id)
+    print("Name: "+instance_name)
+    instance.create_image(
+        Name="{0}-{1}".format(id, today.strftime("%Y-%m-%d")),
+        Description='Capacity-Backup-AMI',
+        NoReboot=True,
+        TagSpecifications=[
+            {
+                'ResourceType': 'image',
+                'Tags': [
+                    {
+                        'Key': 'Name',
+                        'Value': "{0}-{1}".format(instance_name, today.strftime("%Y-%m-%d"))
+                    },
+                ]
+            },  
+        ]
+    )
