@@ -8,9 +8,7 @@
                 "ec2:DescribeInstances",
                 "ec2:DescribeTags",
                 "logs:*",
-                "ec2:DescribeInstanceTypes",
-                "ec2:DescribeInstanceStatus",
-                "ec2:CreateTags"
+                "ec2:CreateTags",
                 "ec2:DeregisterImage",
                 "ec2:DescribeImages"
             ],
