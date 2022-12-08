@@ -41,7 +41,15 @@ for instance in instances:
                         'Key': 'Name',
                         'Value': "{0}-{1}".format(instance_name, today.strftime("%Y-%m-%d"))
                     },
+                    {
+                        'Key': 'Created by Lambda',
+                        'Value': 'yes'
+                    },
                 ]
             },  
         ]
     )
+
+
+
+
