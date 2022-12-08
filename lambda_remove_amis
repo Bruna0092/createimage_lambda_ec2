@@ -1,0 +1,25 @@
+import boto3
+
+ec2 = boto3.resource('ec2', region_name='us-east-1')
+client = boto3.client('ec2')
+
+def lambda_handler(event, context):
+    response = client.describe_images(
+        Filters=[
+            {
+                'Name': 'tag:Created by Lambda',
+                'Values': [
+                    'yes'
+                ],
+            },
+        ],
+)
+    for ami in response ['Images']:
+        if 'Tags' in ami:
+          name = [tag['Value'] for tag in ami['Tags'] if tag['Key'] == 'Name'][0]
+          id=ami['ImageId']
+          image = ec2.Image(id)
+          resp = image.deregister()
+        print ("AMI excluida name: ", name)
+        print ("AMI excluida ID: ", id)
+    return print("Success")
